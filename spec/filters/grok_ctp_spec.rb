@@ -17,14 +17,16 @@ describe LogStash::Filters::Grok do
   describe "commercetools" do
     let(:config) {
         {
-            'match' => { "message" => "%{WORD:word}", "examplefield" => "%{NUMBER:num}" },
+            'match' => {
+                "message" => ' comment: "%{DATA:comment}"'
+            },
             'break_on_match' => false
         }
     }
-    let(:data) { { "message" => "hello world", "examplefield" => "12345" } }
+    let(:data) { { "message" => 'I COMMAND  [conn2270261] command thingies.collection command: find { find: "thingy", filter: { thingyAttribute: "thingyValue" }, projection: { _id: 1 }, limit: 1, batchSize: 73981728, comment: "comment", $db: "thingies" } planSummary: COLLSCAN keysExamined:0 docsExamined:89801 cursorExhausted:1 numYields:703 nreturned:0 reslen:97 locks:{ Global: { acquireCount: { r: 1408 } }, MMAPV1Journal: { acquireCount: { r: 708 } }, Database: { acquireCount: { r: 704 } }, Collection: { acquireCount: { R: 704 }, acquireWaitCount: { R: 4 }, timeAcquiringMicros: { R: 14878 } } } protocol:op_msg 400ms', } }
 
-    it "passes for commercetools" do
-        expect(true).to be false
+    it "can parse comment from mongodb logs" do
+        expect( event.get("comment") ).to eql "comment"
     end
   end
 end
